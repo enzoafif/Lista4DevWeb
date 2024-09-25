@@ -1,4 +1,5 @@
 ﻿using Lista4.Models;
+using Lista4.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Lista4.Controllers
@@ -7,7 +8,12 @@ namespace Lista4.Controllers
     [ApiController]
     public class PessoaController : ControllerBase
     {
-        public static List<Pessoa> pessoas = [];
+        private readonly IPessoaRepository _pessoaRepository;
+
+        public PessoaController(IPessoaRepository pessoaRepository)
+        {
+            _pessoaRepository = pessoaRepository;
+        }
 
         [HttpPost]
         public IActionResult AdicionarPessoa(Pessoa pessoa)
@@ -17,14 +23,7 @@ namespace Lista4.Controllers
                 return BadRequest("O CPF não pode ser vazio");
             }
 
-            var pessoaExiste = pessoas.FirstOrDefault(p => p.Cpf == pessoa.Cpf);
-
-            if (pessoaExiste is not null)
-            {
-                return BadRequest("Já existe uma pessoa cadastrada com esse CPF");
-            }
-
-            pessoas.Add(pessoa);
+            _pessoaRepository.AdicionarPessoa(pessoa);
 
             return Created(string.Empty, "Pessoa cadastrada com sucesso");
         }
@@ -32,46 +31,42 @@ namespace Lista4.Controllers
         [HttpPut]
         public IActionResult AtualizarPessoa(Pessoa pessoa)
         {
-            var pessoaAtualizada = pessoas.FirstOrDefault(p => p.Cpf == pessoa.Cpf);
-
-            if (pessoaAtualizada is null)
+            try
             {
-                return BadRequest("Não existe nenhuma pessoa com esse CPF");
+                _pessoaRepository.AtualizarPessoa(pessoa);
+                return Ok("Pessoa atualizada com sucesso");
             }
-
-            pessoaAtualizada.Nome = pessoa.Nome;
-            pessoaAtualizada.Peso = pessoa.Peso;
-            pessoaAtualizada.Altura = pessoa.Altura;
-
-            return Ok("Pessoa atualizada com sucesso");
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpDelete]
         public IActionResult RemoverPessoa(string cpf)
         {
-            var pessoaRemover = pessoas.FirstOrDefault(p => p.Cpf == cpf);
-
-            if (pessoaRemover is null)
+            try
             {
-                return BadRequest("Não existe nenhuma pessoa com esse CPF");
+                _pessoaRepository.RemoverPessoa(cpf);
+                return Ok("Pessoa removida com sucesso");
             }
-
-            pessoas.Remove(pessoaRemover);
-
-            return Ok("Pessoa removida com sucesso");
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpGet]
         public IActionResult GetPessoas()
         {
-            return Ok(pessoas);
+            return Ok(_pessoaRepository.GetPessoas());
         }
 
         [HttpGet]
         [Route("getByCpf")]
         public IActionResult GetByCpf(string cpf)
         {
-            var pessoaPesquisada = pessoas.FirstOrDefault(p => p.Cpf == cpf);
+            var pessoaPesquisada = _pessoaRepository.GetByCpf(cpf);
 
             if (pessoaPesquisada is null)
             {
@@ -85,15 +80,7 @@ namespace Lista4.Controllers
         [Route("getByImc")]
         public IActionResult GetByImc()
         {
-            var listaImcBom = new List<Pessoa>();
-
-            foreach (var pessoa in pessoas)
-            {
-                var imc = pessoa.Peso / (pessoa.Altura * pessoa.Altura);
-
-                if (imc >= 18 && imc <= 24)
-                    listaImcBom.Add(pessoa);
-            }
+            var listaImcBom = _pessoaRepository.GetByImc();
 
             if (listaImcBom.Count == 0)
             {
@@ -107,7 +94,7 @@ namespace Lista4.Controllers
         [Route("getByNome")]
         public IActionResult GetByNome(string nome)
         {
-            var pessoaPesquisada = pessoas.FirstOrDefault(p => p.Nome == nome);
+            var pessoaPesquisada = _pessoaRepository.GetByNome(nome);
 
             if (pessoaPesquisada is null)
             {

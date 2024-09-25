@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "D:\\Facul\\DevWeb\\Lista4\\Lista4.csproj": {}
+    "D:\\Facul\\Lista4DevWeb\\Lista4.csproj": {}
   },
   "projects": {
-    "D:\\Facul\\DevWeb\\Lista4\\Lista4.csproj": {
+    "D:\\Facul\\Lista4DevWeb\\Lista4.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Facul\\DevWeb\\Lista4\\Lista4.csproj",
+        "projectUniqueName": "D:\\Facul\\Lista4DevWeb\\Lista4.csproj",
         "projectName": "Lista4",
-        "projectPath": "D:\\Facul\\DevWeb\\Lista4\\Lista4.csproj",
+        "projectPath": "D:\\Facul\\Lista4DevWeb\\Lista4.csproj",
         "packagesPath": "C:\\Users\\enzo.fattah\\.nuget\\packages\\",
-        "outputPath": "D:\\Facul\\DevWeb\\Lista4\\obj\\",
+        "outputPath": "D:\\Facul\\Lista4DevWeb\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\enzo.fattah\\AppData\\Roaming\\NuGet\\NuGet.Config",
